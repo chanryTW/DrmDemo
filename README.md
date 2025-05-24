@@ -12,7 +12,10 @@
 
 ## DRM 技術原理
 
-### 流程圖
+### DRM (Digital Rights Management)**
+  - 數位版權管理系統
+  - 用於保護數位內容的技術和系統
+  - 控制數位內容的使用、修改和分發
 
 ```mermaid
 sequenceDiagram
@@ -37,7 +40,9 @@ sequenceDiagram
 ```
 
 ### EME (Encrypted Media Extensions)
-EME 是一個 W3C 規範，它提供了一個應用程式介面（API），使網頁應用程式能夠與內容保護系統（DRM）互動。主要特點：
+  - W3C 標準的網頁 API
+  - 使網頁應用能與 DRM 系統互動
+  - 提供標準化的加密媒體處理介面
 
 1. **抽象層設計**
    - EME 作為瀏覽器和 DRM 系統之間的抽象層
