@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">DRM 影片播放 Demo</h1>
+        <h1 className="text-3xl font-bold mb-8">DRM Crypto Video Demo</h1>
         
         <div className="mb-6 flex gap-4">
           {Object.entries(contents).map(([key, content]) => (
