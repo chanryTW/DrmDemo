@@ -2,15 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import * as shaka from 'shaka-player';
 
 interface VideoPlayerProps {
+  name: string;
   manifestUri: string;
   licenseServer?: string;
-  clearKey?: {
-    keyId: string;
-    key: string;
-  };
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer, clearKey }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ name, manifestUri, licenseServer }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<shaka.Player | null>(null);
 
@@ -38,15 +35,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer, c
               }
             }
           });
-        } else if (clearKey) {
-          // Clear Key 加密
-          player.configure({
-            drm: {
-              clearKeys: {
-                [clearKey.keyId]: clearKey.key
-              }
-            }
-          });
         }
 
         // 載入影片
@@ -58,15 +46,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer, c
     };
 
     initPlayer();
-
-    // 清理函數
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-        playerRef.current = null;
-      }
-    };
-  }, [manifestUri, licenseServer, clearKey]);
+  }, [name]);
 
   return (
     <div className="video-player-container">
@@ -76,7 +56,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer, c
         className="w-full max-w-4xl"
       />
       <div className="mt-4 text-sm text-gray-600">
-        {clearKey ? '使用 Clear Key 加密播放' : licenseServer ? '使用 DRM 保護播放' : '未加密內容'}
+        {name}
       </div>
     </div>
   );
