@@ -2,6 +2,81 @@
 
 使用 React 和 Shaka Player 實現的 DRM 影片播放器示範。展示了如何在網頁應用程式中實現受保護內容的播放，包括未加密內容和使用 Widevine DRM 保護的內容。
 
+## 加密效果展示
+
+### 未加密截圖
+![未加密的影片內容](./public/clear.png)
+
+### 加密後截圖
+![加密後的影片內容](./public/crypto.png)
+
+## DRM 技術原理
+
+### 流程圖
+
+```mermaid
+sequenceDiagram
+    participant C as 客戶端
+    participant P as 播放器
+    participant CDM as 內容解密模組
+    participant L as 授權伺服器
+    participant K as 金鑰系統
+
+    C->>P: 1. 請求播放加密內容
+    P->>P: 2. 檢測加密內容
+    P->>CDM: 3. 初始化 CDM
+    CDM-->>P: 4. 返回 CDM 實例
+    P->>L: 5. 請求播放授權
+    L->>K: 6. 驗證並獲取金鑰
+    K-->>L: 7. 返回內容金鑰
+    L-->>P: 8. 發放授權證書
+    P->>CDM: 9. 提供授權證書
+    CDM->>CDM: 10. 解密內容
+    CDM-->>P: 11. 解密後的媒體流
+    P-->>C: 12. 播放內容
+```
+
+### EME (Encrypted Media Extensions)
+EME 是一個 W3C 規範，它提供了一個應用程式介面（API），使網頁應用程式能夠與內容保護系統（DRM）互動。主要特點：
+
+1. **抽象層設計**
+   - EME 作為瀏覽器和 DRM 系統之間的抽象層
+   - 不直接實現加密，而是提供標準介面
+   - 支援多種 DRM 系統（Widevine、PlayReady、FairPlay）
+
+2. **關鍵元件**
+   - MediaKeys：管理解密金鑰
+   - MediaKeySession：處理授權請求和更新
+   - Content Decryption Module (CDM)：實際執行解密的模組
+
+3. **工作流程**
+   - 應用程式請求金鑰系統訪問權限
+   - 創建 MediaKeys 實例
+   - 與授權伺服器交換訊息
+   - CDM 處理內容解密
+
+### DRM 系統架構
+
+1. **內容加密**
+   - 使用 AES-128 等加密算法
+   - 內容金鑰（CEK）加密媒體
+   - 金鑰加密金鑰（KEK）保護 CEK
+
+2. **金鑰傳遞**
+   - 安全通道建立
+   - 金鑰交換協議
+   - 臨時會話金鑰生成
+
+3. **授權管理**
+   - 用戶認證和授權
+   - 播放權限控制
+   - 使用限制實施
+
+4. **安全考慮**
+   - 硬體安全等級要求
+   - 防篡改機制
+   - 安全時鐘同步
+
 ## 功能特點
 
 - 支援 DASH 格式影片播放
