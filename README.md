@@ -1,28 +1,29 @@
-# DRM Crypto Video Demo
+# DRM Video Player Demo
 
-這是一個展示不同 DRM（數位版權管理）方案的示範專案。本專案使用 React、TypeScript 和 Shaka Player 實現了三種不同層級的影片保護機制。
+使用 React 和 Shaka Player 實現的 DRM 影片播放器示範。展示了如何在網頁應用程式中實現受保護內容的播放，包括未加密內容和使用 Widevine DRM 保護的內容。
 
 ## 功能特點
 
-- 支援三種播放模式：
-  - 未加密影片播放
-  - Clear Key 加密播放（基礎加密方案）
-  - Widevine DRM 播放（商業級 DRM 解決方案）
-- 使用 Shaka Player 實現跨平台支援
-- 現代化的使用者介面（使用 Tailwind CSS）
-- TypeScript 支援，提供更好的開發體驗
+- 支援 DASH 格式影片播放
+- 支援 Widevine DRM 內容播放
+- 響應式設計
+- 簡潔的使用者介面
+- 自動播放支援
+- 錯誤處理和日誌記錄
 
-## 技術需求
+## Tech Stack
 
-- Node.js 16.0 或更高版本
-- 現代瀏覽器（Chrome、Firefox、Edge 等）
-- 支援 EME（Encrypted Media Extensions）的瀏覽器
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Shaka Player
+- Widevine DRM
 
-## 安裝步驟
+## Quick Start
 
-1. 克隆專案：
+1. Clone 專案：
 ```bash
-git clone https://github.com/yourusername/DrmDemo.git
+git clone [your-repository-url]
 cd DrmDemo
 ```
 
@@ -36,93 +37,80 @@ npm install
 npm run dev
 ```
 
-## 專案結構
 
-```
-src/
-  ├── components/
-  │   └── VideoPlayer.tsx    # 影片播放器元件
-  ├── App.tsx               # 主應用程式
-  └── index.css            # 全局樣式
-```
+## 建構 DRM 系統步驟
 
-## DRM 實作說明
+想要建構自己的 DRM 系統，主要步驟：
 
-### 1. 未加密內容
-- 直接使用 DASH 格式的影片
-- 無需額外設定
-- 適合公開內容
+1. **內容準備**
+   - 準備原始媒體內容（視頻、音頻）
+   - 使用編碼工具將內容轉換為適合串流的格式（如 DASH）
+   - 選擇合適的 DRM 系統（Widevine、PlayReady、FairPlay 等）
 
-### 2. Clear Key 加密
-- 使用基本的加密金鑰保護
-- 需要配置 keyId 和 key
-- 範例配置：
-```typescript
-{
-  keyId: '8b5abc593d1b21d7f9ab88506b648656',
-  key: '3d5e6d6b756b686c666d58776b5a6c54'
-}
-```
+2. **加密過程**
+   - 生成內容金鑰（Content Key）
+   - 使用內容金鑰加密媒體內容
+   - 生成金鑰 ID（Key ID）
+   - 產生加密後的 DASH 或 HLS 資源
 
-### 3. Widevine DRM
-- Google 的商業級 DRM 解決方案
-- 需要授權伺服器
-- 目前使用測試伺服器：
-```typescript
-licenseServer: 'https://proxy.uat.widevine.com/proxy?provider=widevine_test'
-```
+3. **授權伺服器設置**
+   - 建立授權伺服器（License Server）
+   - 實現授權邏輯和規則
+   - 設置金鑰管理系統
+   - 配置安全通訊協定（如 HTTPS）
 
-## 實際部署注意事項
+4. **金鑰管理**
+   - 建立金鑰管理系統（KMS）
+   - 實現金鑰輪換機制
+   - 設置金鑰存儲和備份
+   - 建立金鑰分發機制
 
-### 測試環境
-- 目前使用的內容和服務僅供測試
-- 測試用的 DRM 伺服器不應用於生產環境
+5. **播放器整合**
+   - 選擇支援 DRM 的播放器（如 Shaka Player）
+   - 配置 DRM 系統參數
+   - 實現授權請求邏輯
+   - 處理錯誤和異常情況
 
-### 正式環境需求
-1. **Widevine 授權**
-   - 需要向 Google 申請正式授權
-   - 需要簽署相關合約和支付費用
+6. **安全考慮**
+   - 實現 HTTPS
+   - 設置跨域資源共享（CORS）
+   - 實現用戶認證和授權
+   - 防止金鑰洩露和未授權訪問
 
-2. **內容加密**
-   - 需要專業的加密工具
-   - 建議使用 Shaka Packager 或其他專業工具
+7. **測試和監控**
+   - 測試不同設備和瀏覽器的相容性
+   - 監控授權請求和播放狀態
+   - 實現日誌記錄和分析
+   - 設置警報機制
 
-3. **授權伺服器**
-   - 需要建立自己的授權伺服器
-   - 或使用第三方 DRM 服務
+## 注意事項
 
-### 建議的部署方案
+1. DRM 系統需要瀏覽器支援。確保你的瀏覽器支援 Widevine DRM。
+2. 在生產環境中，你需要：
+   - 使用自己的 DRM 授權伺服器
+   - 實現適當的用戶認證
+   - 保護金鑰和授權資訊
+   - 監控和記錄系統使用情況
 
-1. **使用第三方服務**
-   - 推薦使用 EZDRM、BuyDRM 等服務
-   - 提供完整的 DRM 解決方案
-   - 降低部署和維護難度
+## 開發建議
 
-2. **自建系統**
-   - 需要較高的技術投入
-   - 適合有特殊需求的場景
-   - 需要考慮：
-     * 金鑰管理
-     * 授權驗證
-     * 安全性維護
+1. **開發環境設置**
+   - 使用測試用的 DRM 授權伺服器
+   - 使用未加密的測試內容進行初始開發
+   - 實現錯誤處理和日誌記錄
 
-## 常見問題
-
-1. **影片無法播放**
-   - 檢查瀏覽器是否支援 EME
-   - 確認網路連接正常
-   - 檢查 Console 中的錯誤訊息
-
-2. **DRM 相關問題**
-   - Clear Key：確認金鑰格式正確
-   - Widevine：確認授權伺服器可訪問
+2. **安全性考慮**
+   - 不要在客戶端存儲敏感的 DRM 相關資訊
+   - 使用安全的通訊協定
+   - 實現適當的錯誤處理
+   - 考慮離線播放需求
 
 ## 參考資源
 
-- [Shaka Player 文件](https://shaka-player-demo.appspot.com/docs/api/tutorial-welcome.html)
-- [Widevine DRM](https://www.widevine.com/)
-- [EME 規範](https://w3c.github.io/encrypted-media/)
+- [Shaka Player 官方文檔](https://shaka-player-demo.appspot.com/docs/api/index.html)
+- [Widevine DRM 文檔](https://www.widevine.com/)
+- [DASH-IF 實施指南](https://dashif.org/)
 
-## 授權
+## License
 
-MIT License
+MIT
