@@ -4,9 +4,13 @@ import * as shaka from 'shaka-player';
 interface VideoPlayerProps {
   manifestUri: string;
   licenseServer?: string;
+  clearKey?: {
+    keyId: string;
+    key: string;
+  };
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer, clearKey }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<shaka.Player | null>(null);
 
@@ -24,12 +28,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer })
         const player = new shaka.Player(video);
         playerRef.current = player;
 
-        // 如果有提供 license server，設置 DRM
+        // 設置 DRM 配置
         if (licenseServer) {
+          // Widevine DRM
           player.configure({
             drm: {
               servers: {
                 'com.widevine.alpha': licenseServer
+              }
+            }
+          });
+        } else if (clearKey) {
+          // Clear Key 加密
+          player.configure({
+            drm: {
+              clearKeys: {
+                [clearKey.keyId]: clearKey.key
               }
             }
           });
@@ -52,7 +66,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer })
         playerRef.current = null;
       }
     };
-  }, [manifestUri, licenseServer]);
+  }, [manifestUri, licenseServer, clearKey]);
 
   return (
     <div className="video-player-container">
@@ -61,6 +75,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ manifestUri, licenseServer })
         controls
         className="w-full max-w-4xl"
       />
+      <div className="mt-4 text-sm text-gray-600">
+        {clearKey ? '使用 Clear Key 加密播放' : licenseServer ? '使用 DRM 保護播放' : '未加密內容'}
+      </div>
     </div>
   );
 };
