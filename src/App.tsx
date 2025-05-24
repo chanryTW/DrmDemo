@@ -20,7 +20,7 @@ function App() {
   const currentContent = contents[selectedContent];
   
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="w-screen min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">DRM Crypto Video Demo</h1>
         
