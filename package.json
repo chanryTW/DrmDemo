@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^22.15.21",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "shaka-player": "^4.14.14"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^4.5.0",
     "autoprefixer": "^10.4.17",
     "eslint": "^9.25.0",
