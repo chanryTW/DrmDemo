@@ -2,6 +2,14 @@
 
 使用 React 和 Shaka Player 實現的 DRM 影片播放器示範。展示了如何在網頁應用程式中實現受保護內容的播放，包括未加密內容和使用 Widevine DRM 保護的內容。
 
+## 實際應用案例
+
+### Netflix
+[Netflix](https://www.netflix.com)
+
+### BuyDRM MultiKey 服務
+[BuyDRM MultiKey Demo](https://buydrm.com/multikey-demo/) 
+
 ## 加密效果展示
 
 ### 未加密截圖
