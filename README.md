@@ -28,6 +28,7 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
   - 控制數位內容的使用、修改和分發 (Controls the use, modification, and distribution of digital content)
 
 ### DRM 系統 (DRM System)
+  - 負責發放與管理影片的授權金鑰（License）
 
 | DRM 名稱              | DRM Server 提供者 | 支援的播放器 / 裝置                               | 備註                 |
 | ------------------- | -------------- | ----------------------------------------- | ------------------ |
@@ -53,13 +54,16 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
 | **Edge（原生）**        | Widevine、PlayReady          | 根據平台選擇 DRM                    |
 | **Firefox（原生）**     | Widevine、ClearKey           | 不支援 PlayReady、FairPlay        |
 
-## EME (Encrypted Media Extensions)
-  - W3C 標準的網頁 API
-  - 使網頁應用能與 DRM/CDM 系統互動
-  - 提供標準化的加密媒體處理介面
+---
 
 ## CDM (Content Decryption Module)
   - 播放器內建的解密模組，與 DRM Server 配對使用。
+  - 提供標準化的加密媒體處理介面
+  - CDM 是無法被 JavaScript 存取的黑盒子模組
+
+## EME (Encrypted Media Extensions)
+  - W3C 標準的網頁 API
+  - 使網頁應用能與 DRM/CDM 系統互動
   - 提供標準化的加密媒體處理介面
 
 ## 串流播放流程（EME 與 DRM）
@@ -84,6 +88,8 @@ sequenceDiagram
     播放器(JS)->>CDM: 提交 license
     CDM-->>瀏覽器: 解密影片並播放
 ```
+
+---
 
 ## 處理截圖與螢幕錄影（由 DRM 裝置層控制）
 ```mermaid
@@ -135,3 +141,10 @@ npm run dev
 - [Shaka Player 官方文檔 (Official Documentation)](https://shaka-player-demo.appspot.com/docs/api/index.html)
 - [Widevine DRM 文檔 (Documentation)](https://www.widevine.com/)
 - [DASH-IF 實施指南 (Implementation Guidelines)](https://dashif.org/)
+- [W3C Encrypted Media Extensions (EME) 規格文件](https://www.w3.org/TR/encrypted-media/)
+- [Google Shaka Player（開源 DRM 播放器）](https://shaka-player-demo.appspot.com/docs/api/tutorial-drm-config.html)
+- [Mozilla MDN - Encrypted Media Extensions (EME)](https://developer.mozilla.org/en-US/docs/Web/API/Encrypted_Media_Extensions_API)
+- [BuyDRM 官方文件 (BuyDRM Official Documentation)](https://docs.buydrm.com/)
+- [Google Widevine DRM](https://www.widevine.com/)
+- [Microsoft PlayReady DRM](https://www.microsoft.com/playready/)
+- [Apple FairPlay Streaming (FPS)](https://developer.apple.com/streaming/)
