@@ -27,6 +27,11 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
   - 用於保護數位內容的技術和系統 (Technology and systems for protecting digital content)
   - 控制數位內容的使用、修改和分發 (Controls the use, modification, and distribution of digital content)
 
+
+### 加密封裝格式 (Encrypted Packaging Format)
+  - DASH (.mpd) + CENC + fMP4
+  - HLS (.m3u8) + AES-128 or FairPlay 加密
+
 ### DRM 系統 (DRM System)
   - 負責發放與管理影片的授權金鑰（License）
 
