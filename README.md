@@ -42,7 +42,14 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
 | **FairPlay**        | Apple          | Safari、iOS、tvOS、macOS                     | 專屬於 Apple 生態系      |
 | **ClearKey (CENC)** | W3C (開源)       | Chrome、Firefox、Edge                       | 測試或開放用途，無授權加密支援    |
 
----
+### 支援度寫法
+```javascript
+if (supportsWidevine) {
+  loadPlayer({ drm: 'widevine', licenseUrl: '...' })
+} else if (supportsFairPlay) {
+  loadPlayer({ drm: 'fairplay', licenseUrl: '...' })
+}
+```
 
 ### 播放器 (Player)
 
