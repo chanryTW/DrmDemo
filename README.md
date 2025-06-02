@@ -152,7 +152,7 @@ sequenceDiagram
     note right of 瀏覽器: ※ 影片受 DRM 保護（如 Widevine、FairPlay）
 
     瀏覽器->>CDM（內建於瀏覽器）: 啟動 CDM 解密程序
-    CDM（內建於瀏覽器）->>作業系統: 檢查輸出安全性（HDCP、TEE 等）
+    CDM（內建於瀏覽器）->>作業系統: 告知受保護內容，請檢查輸出安全性（HDCP、TEE 等）
     note right of CDM（內建於瀏覽器）: ※ 根據 DRM 政策要求安全輸出環境
 
     作業系統-->>CDM（內建於瀏覽器）: 回傳輸出環境狀態
@@ -162,7 +162,6 @@ sequenceDiagram
     使用者->>作業系統: 嘗試截圖 / 錄影
     作業系統-->>使用者: 阻擋錄影（某些情況）
     作業系統-->>瀏覽器: （通常不通知截圖行為）
-
 ```
 
 ## Tech Stack
