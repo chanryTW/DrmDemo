@@ -6,10 +6,8 @@ A DRM video player demonstration implemented using React and Shaka Player. It sh
 
 ## 實際應用案例 (Real-world Applications)
 
-### Netflix
 [Netflix](https://www.netflix.com)
 
-### BuyDRM MultiKey 服務 (BuyDRM MultiKey Service)
 [BuyDRM MultiKey Demo](https://buydrm.com/multikey-demo/) 
 
 ## 加密效果展示 (Encryption Effect Demonstration)
@@ -27,6 +25,23 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
   - 用於保護數位內容的技術和系統 (Technology and systems for protecting digital content)
   - 控制數位內容的使用、修改和分發 (Controls the use, modification, and distribution of digital content)
 
+## 歷史
+
+- 2007
+    - Netflix
+        - ～2010 需安裝外掛
+        - ～2016 早期實行 eme草案，因為只能在chrome 上使用
+- 2017
+    - W3C 將 EME 正式納入 HTML 標準，成為 Web 上標準化的 DRM 解決方案（引起開源社群反彈，但仍推行）。
+    - 開源社群反對 DRM，不是單純因為它是保護技術，而是因為它代表一種「限制使用者權利、破壞開放生態、依賴黑盒子」的封閉文化，與開源理念背道而馳。
+    - 自由軟體基金會發起 Defective by Design
+    - 主流影音服務必須用 DRM 才能保護內容授權商的利益。為了讓這些內容能在瀏覽器播放，W3C 妥協納入了 EME，否則這些服務會被迫改用原生 App，而不是用瀏覽器播放。
+- 2019
+    - Disney+
+    - Apple TV+
+- 2020
+    - HBO Max
+- DRM 從最早的「防拷技術」，演進為現今複雜的「數位存取權控管系統」
 
 ### 加密封裝格式 (Encrypted Packaging Format)
   - DASH (.mpd) + CENC + fMP4
