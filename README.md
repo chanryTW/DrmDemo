@@ -30,7 +30,7 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
 - 2007
     - Netflix
         - ～2010 需安裝外掛
-        - ～2016 早期實行 eme草案，因為只能在chrome 上使用
+        - ～2016 採用 eme (Widevine) 草案，只能在 chrome 上使用
 - 2017
     - W3C 將 EME 正式納入 HTML 標準，成為 Web 上標準化的 DRM 解決方案（引起開源社群反彈，但仍推行）。
     - 開源社群反對 DRM，不是單純因為它是保護技術，而是因為它代表一種「限制使用者權利、破壞開放生態、依賴黑盒子」的封閉文化，與開源理念背道而馳。
@@ -43,12 +43,9 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
     - HBO Max
 - DRM 從最早的「防拷技術」，演進為現今複雜的「數位存取權控管系統」
 
-### 加密封裝格式 (Encrypted Packaging Format)
-  - DASH (.mpd) + CENC + fMP4
-  - HLS (.m3u8) + AES-128 or FairPlay 加密
-
 ### DRM 系統 (DRM System)
   - 負責發放與管理影片的授權金鑰（License）
+  - 不同影片、用戶、平台發不同金鑰
 
 | DRM 名稱              | DRM Server 提供者 | 支援的播放器 / 裝置                               | 備註                 |
 | ------------------- | -------------- | ----------------------------------------- | ------------------ |
@@ -57,13 +54,35 @@ DRM 指的是數位版權管理 （Digital Rights Management）。DRM 的目的�
 | **FairPlay**        | Apple          | Safari、iOS、tvOS、macOS                     | 專屬於 Apple 生態系      |
 | **ClearKey (CENC)** | W3C (開源)       | Chrome、Firefox、Edge                       | 測試或開放用途，無授權加密支援    |
 
-### 支援度寫法
+### 加密封裝格式 (Encrypted Packaging Format)
+  - DASH (.mpd) + CENC + fMP4
+  - HLS (.m3u8) + AES-128 or FairPlay 加密
+
+### 支援度判斷範例
 ```javascript
-if (supportsWidevine) {
-  loadPlayer({ drm: 'widevine', licenseUrl: '...' })
-} else if (supportsFairPlay) {
-  loadPlayer({ drm: 'fairplay', licenseUrl: '...' })
+async function isSupportsWidevine(): Promise<boolean> {
+  if (!('requestMediaKeySystemAccess' in navigator)) {
+    return false;
+  }
+
+  try {
+    const config = [{
+      initDataTypes: ['cenc'],
+      videoCapabilities: [{
+        contentType: 'video/mp4; codecs="avc1.42E01E"',
+      }],
+    }];
+
+    await navigator.requestMediaKeySystemAccess('com.widevine.alpha', config);
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
+
+isSupportsWidevine().then((isSupported) => {
+  console.log('支援 Widevine:', isSupported);
+});
 ```
 
 ### 播放器 (Player)
@@ -99,42 +118,51 @@ sequenceDiagram
     participant 使用者
     participant 瀏覽器
     participant 播放器(JS)
+    participant EME API（瀏覽器）
+    participant CDM（瀏覽器內部模組）
     participant DRM Server
-    participant CDM
 
     使用者->>瀏覽器: 開啟影片頁面
     瀏覽器->>播放器(JS): 初始化播放器
-    播放器(JS)->>瀏覽器: requestMediaKeySystemAccess(DRM類型)
-    瀏覽器->>CDM: 查詢支援的 DRM
-    CDM-->>瀏覽器: 回傳 MediaKeys
-    播放器(JS)->>瀏覽器: setMediaKeys()
-    播放器(JS)->>瀏覽器: 載入加密影片
-    瀏覽器->>播放器(JS): 觸發 encrypted 事件
+    播放器(JS)->>EME API（瀏覽器）: requestMediaKeySystemAccess(DRM類型)
+    EME API（瀏覽器）->>CDM（瀏覽器內部模組）: 查詢支援的 DRM
+    CDM（瀏覽器內部模組）-->>EME API（瀏覽器）: 回傳 MediaKeys
+    播放器(JS)->>EME API（瀏覽器）: setMediaKeys()
+    播放器(JS)->>EME API（瀏覽器）: 載入加密影片
+    EME API（瀏覽器）->>播放器(JS): 觸發 encrypted 事件
     播放器(JS)->>DRM Server: 傳送 license request
     DRM Server-->>播放器(JS): 回傳 license (金鑰)
-    播放器(JS)->>CDM: 提交 license
-    CDM-->>瀏覽器: 解密影片並播放
+    播放器(JS)->>CDM（瀏覽器內部模組）: 提交 license
+    CDM（瀏覽器內部模組）-->>EME API（瀏覽器）: 解密影片
+    EME API（瀏覽器）-->>瀏覽器: 播放影片
 ```
 
 ---
 
-## 處理截圖與螢幕錄影（由 DRM 裝置層控制）
+## 處理截圖與螢幕錄影（DRM 回傳限制、CDM控制）
 ```mermaid
 sequenceDiagram
     participant 使用者
     participant 作業系統
     participant 瀏覽器
-    participant CDM
+    participant CDM（內建於瀏覽器）
     participant 顯示硬體
 
     使用者->>瀏覽器: 嘗試播放受保護影片
-    瀏覽器->>CDM: 初始化解密
-    CDM->>作業系統: 檢查輸出路徑 (HDCP、TEE等)
-    作業系統->>CDM: 回報保護狀態 (是否為安全輸出)
-    CDM->>顯示硬體: 播放影片
+    note right of 瀏覽器: ※ 影片受 DRM 保護（如 Widevine、FairPlay）
+
+    瀏覽器->>CDM（內建於瀏覽器）: 啟動 CDM 解密程序
+    CDM（內建於瀏覽器）->>作業系統: 檢查輸出安全性（HDCP、TEE 等）
+    note right of CDM（內建於瀏覽器）: ※ 根據 DRM 政策要求安全輸出環境
+
+    作業系統-->>CDM（內建於瀏覽器）: 回傳輸出環境狀態
+    CDM（內建於瀏覽器）-->>瀏覽器: 回報是否可播放
+    CDM（內建於瀏覽器）->>顯示硬體: 解密後傳送影像資料
+
     使用者->>作業系統: 嘗試截圖 / 錄影
-    作業系統-->>使用者: 阻擋錄影（部分情況）
-    作業系統-->>瀏覽器: 不通知截圖行為
+    作業系統-->>使用者: 阻擋錄影（某些情況）
+    作業系統-->>瀏覽器: （通常不通知截圖行為）
+
 ```
 
 ## Tech Stack
